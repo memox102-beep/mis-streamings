@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0F7C74">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mis Streamings">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<!--APP-START-->
+<title>Mis Streamings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&amp;family=Figtree:wght@400;500;600&amp;display=swap">
+<style>
+:root{
+  --bg:#EEF1F4; --surface:#FFFFFF; --ink:#141A22; --muted:#5E6975; --line:#D9DEE4;
+  --accent:#0F7C74; --accent-ink:#FFFFFF; --soft:#E1EFEC;
+  --warn:#B45309; --warn-bg:#FCEFD9; --ok:#1E7B46; --ok-bg:#DFF1E6; --err:#B42318;
+  --netflix:#C8161E; --disney:#1B3A8C; --max:#4B2BBE; --prime:#1A98C7; --appletv:#3A3A3F;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#10151B; --surface:#1A2129; --ink:#E9EDF1; --muted:#98A3AF; --line:#2B343E;
+    --accent:#3FB8AC; --accent-ink:#06201D; --soft:#16302D;
+    --warn:#F2B05E; --warn-bg:#3A2A12; --ok:#6FD39A; --ok-bg:#15301F; --err:#F4877C;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#10151B; --surface:#1A2129; --ink:#E9EDF1; --muted:#98A3AF; --line:#2B343E;
+  --accent:#3FB8AC; --accent-ink:#06201D; --soft:#16302D;
+  --warn:#F2B05E; --warn-bg:#3A2A12; --ok:#6FD39A; --ok-bg:#15301F; --err:#F4877C;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 Figtree,system-ui,sans-serif;padding-inline:16px;padding-block:28px 110px}
+.wrap{max-width:880px;margin:0 auto;display:grid;gap:22px}
+h1,h2{font-family:"Bricolage Grotesque",Figtree,system-ui,sans-serif;margin:0;text-wrap:balance}
+h1{font-size:clamp(28px,6vw,40px);font-weight:800;letter-spacing:-.02em}
+h2{font-size:18px;font-weight:600}
+.sub{color:var(--muted);margin:4px 0 0}
+.label{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.num{font-variant-numeric:tabular-nums}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.head{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+
+.top{display:grid;grid-template-columns:1.3fr 1fr;gap:14px}
+@media (max-width:640px){.top{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:10px;align-content:start}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.email-text{flex:1 1 180px;min-width:0;font-weight:600;font-size:17px;overflow-wrap:anywhere}
+.field{flex:1 1 200px;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 12px;width:100%}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 14px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.sm{padding:5px 10px;font-size:13px}
+.btn:disabled{opacity:.55;cursor:default}
+.linkbtn{background:none;border:0;padding:0;color:var(--muted);text-decoration:underline;font-size:13px}
+.totals{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.big{font-family:"Bricolage Grotesque",Figtree,sans-serif;font-size:28px;font-weight:800;line-height:1.1}
+.hint{font-size:13px;color:var(--muted)}
+.msg{font-size:13.5px;font-weight:600;color:var(--err);min-height:1em}
+
+.lock{background:var(--soft);border-radius:14px;padding:16px 18px;display:grid;gap:10px}
+.lock .row .field{background:var(--surface)}
+.check{display:flex;gap:6px;align-items:center;font-size:13.5px;color:var(--muted)}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:640px){.grid{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;gap:14px;align-content:start}
+.card-head{display:flex;align-items:center;gap:12px}
+.mono{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;color:#fff;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:20px;flex:none}
+.card-head .name{font-weight:600;font-size:17px}
+.card-head .plan{font-size:13px;color:var(--muted)}
+.chip{margin-left:auto;font-size:12px;font-weight:600;padding:3px 9px;border-radius:999px;background:var(--bg);color:var(--muted);white-space:nowrap}
+.chip.soon{background:var(--warn-bg);color:var(--warn)}
+.chip.ok{background:var(--ok-bg);color:var(--ok)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.facts div,.pw{display:grid;gap:2px}
+.facts .v{font-weight:600}
+.pw-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pw-val{font-weight:600;flex:1 1 120px;min-width:0;overflow-wrap:anywhere;letter-spacing:.04em}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.actions .primary{flex:1 1 auto}
+.edit{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.edit label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+.edit .full{grid-column:1/-1}
+.edit input{border:1px solid var(--line);background:var(--bg);border-radius:9px;padding:8px 10px;width:100%}
+
+.tips{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:10px}
+.tips ol,.tips ul{margin:0;padding-left:20px;display:grid;gap:6px;max-width:68ch}
+.savebar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;z-index:5}
+.savebar .msg{flex:1 1 200px;max-width:520px}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:9px 16px;border-radius:999px;font-weight:600;font-size:14px;z-index:6;max-width:calc(100% - 32px);text-align:center}
+.card:hover{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+@media (prefers-reduced-motion:no-preference){.card{transition:border-color .15s}}
+</style>
+
+<div class="wrap">
+  <header class="head">
+    <div>
+      <h1>Mis streamings</h1>
+      <p class="sub">Accesos de la familia a Netflix, Disney+, HBO Max, Prime Video y Apple TV.</p>
+    </div>
+    <button class="btn" id="editBtn" type="button" hidden="">Editar</button>
+  </header>
+
+  <section class="top">
+    <div class="panel">
+      <span class="label">Correo general</span>
+      <div class="row">
+        <span class="email-text" id="emailText"></span>
+        <input class="field" id="emailInput" type="email" placeholder="tucorreo@ejemplo.com" autocomplete="off" hidden="">
+        <button class="btn" id="copyEmail" type="button">Copiar</button>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="totals">
+        <div><span class="label">Gasto mensual</span><div class="big num" id="total">$0</div></div>
+        <div><span class="label">Próximo cobro</span><div class="big num" id="nextAmt">—</div><div class="hint" id="nextWho"></div></div>
+      </div>
+      <span class="hint num" id="yearly"></span>
+    </div>
+  </section>
+
+  <section class="lock" id="lock">
+    <div id="lockForm" hidden="">
+      <div style="display:grid;gap:10px">
+        <span class="label">Contraseñas protegidas</span>
+        <div class="row">
+          <input class="field" id="unlockInput" type="password" placeholder="Clave familiar" autocomplete="off">
+          <button class="btn primary" id="unlockBtn" type="button">Desbloquear</button>
+        </div>
+        <label class="check"><input type="checkbox" id="remember"> Recordar en este dispositivo</label>
+        <span class="msg" id="lockMsg"></span>
+      </div>
+    </div>
+    <div id="lockOpen" class="row" hidden="">
+      <span style="flex:1 1 200px">Contraseñas desbloqueadas en este dispositivo.</span>
+      <button class="btn sm" id="relockBtn" type="button">Bloquear</button>
+    </div>
+    <div id="lockNone" hidden="">
+      <span class="hint">Todavía no hay contraseñas guardadas.</span>
+    </div>
+  </section>
+
+  <section class="panel" id="keyPanel" hidden="">
+    <span class="label">Clave familiar</span>
+    <input class="field" id="familyKey" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Mínimo 6 caracteres, ej. una frase corta">
+    <span class="hint">Tu familia la escribe una vez para ver las contraseñas. Sin ella, quien abra el link solo ve correo, costos y fechas. Mejor una frase que 4 números.</span>
+  </section>
+
+  <section class="grid" id="cards"></section>
+
+  <section class="tips">
+    <h2>Cómo entrar</h2>
+    <ol>
+      <li>Escribe la clave familiar arriba y toca Desbloquear.</li>
+      <li>En el servicio que quieras, toca Copiar en la contraseña y luego Iniciar sesión.</li>
+      <li>Pega el correo y la contraseña en la página que se abre.</li>
+    </ol>
+    <p class="hint" style="margin:0;max-width:68ch">¿Vas a ver en una tele? Abre la app en la tele, elige iniciar sesión y mándale el código al dueño. Él lo escribe en "Código de TV" desde su celular y la tele entra sin teclear contraseñas.</p>
+  </section>
+</div>
+
+<div class="savebar" id="savebar" hidden="">
+  <span class="msg" id="saveMsg"></span>
+  <button class="btn" id="cancelBtn" type="button">Cancelar</button>
+  <button class="btn primary" id="saveBtn" type="button">Guardar cambios</button>
+</div>
+<div class="toast" id="toast" hidden=""></div>
+
+<script type="application/json" id="app-data">{"email":"","subs":{"netflix":{"cost":"909","day":"27","plan":"Premium · Meli+ ($909 incluye Disney+, HBO Max y Apple TV)","email":"memox102@gmail.com"},"disney":{"cost":"0","day":"27","plan":"Premium · incluido en el cobro de Meli+","email":"memox102@gmail.com"},"max":{"cost":"0","day":"27","plan":"Platino · incluido en el cobro de Meli+","email":"memox102@hotmail.com"},"prime":{"cost":"","day":"","plan":"","email":"memox102@hotmail.com"},"appletv":{"cost":"0","day":"27","plan":"Incluido en el cobro de Meli+","email":"memox102@hotmail.com"}},"enc":{"v":1,"n":310000,"s":"cZLm7A9PNh9KWI/YEm3PYQ==","i":"yf6Uz/mcEHzPw1kk","c":"kVrxKzBFHCPq7UzNtItGMx/Wqc+o/2FauKGN0S18plyhXW7468MjtPWFki/wtoHHXmOCVBBPre+b4A7efKaLMF9aXlXdHP59tpi89X2ptbd+E4Hv4sGO1RnUytthQ43J+VsS9zxaOSg734c+QvPmB49eTjpBpv7QValQh4XomjSqYnm3"}}</script>
+<script>
+(function(){
+const SERVICES=[
+  {id:"netflix",name:"Netflix",letter:"N",color:"var(--netflix)",url:"https://www.netflix.com/login",tv:"https://www.netflix.com/tv8"},
+  {id:"disney",name:"Disney+",letter:"D",color:"var(--disney)",url:"https://www.disneyplus.com/login",tv:"https://www.disneyplus.com/begin"},
+  {id:"max",name:"HBO Max",letter:"M",color:"var(--max)",url:"https://play.hbomax.com/",tv:"https://www.hbomax.com/tvsignin"},
+  {id:"prime",name:"Prime Video",letter:"P",color:"var(--prime)",url:"https://www.primevideo.com/",tv:"https://www.primevideo.com/mytv"},
+  {id:"appletv",name:"Apple TV",letter:"A",color:"var(--appletv)",url:"https://tv.apple.com/",tv:"https://activate.apple.com/"}
+];
+const $=id=>document.getElementById(id);
+const M_START="<"+"!-"+"-APP-START-"+"->", M_END="<"+"!-"+"-APP-END-"+"->";
+let data; try{data=JSON.parse($("app-data").textContent);}catch(e){data={email:"",subs:{},enc:null};}
+SERVICES.forEach(s=>{data.subs[s.id]=Object.assign({cost:"",day:"",plan:"",email:""},data.subs[s.id]||{});});
+
+let SNAP=null, art=null, canWrite=false, mode="view", pw=null, currentKey="", shown={}, draft=null, busy=false;
+
+/* ---------- utilidades ---------- */
+const money=n=>"$"+Number(n||0).toLocaleString("es-MX",{minimumFractionDigits:0,maximumFractionDigits:2});
+const esc=v=>String(v??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ls={get:k=>{try{return localStorage.getItem(k);}catch(e){return null;}},set:(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}},del:k=>{try{localStorage.removeItem(k);}catch(e){}}};
+const ss={get:k=>{try{return sessionStorage.getItem(k);}catch(e){return null;}},set:(k,v)=>{try{sessionStorage.setItem(k,v);}catch(e){}},del:k=>{try{sessionStorage.removeItem(k);}catch(e){}}};
+function toast(m){const t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2200);}
+async function copyText(text,label,fallbackEl){
+  try{await navigator.clipboard.writeText(text);toast(label+" copiado");}
+  catch(e){if(fallbackEl){const r=document.createRange();r.selectNodeContents(fallbackEl);const s=getSelection();s.removeAllRanges();s.addRange(r);}toast("Seleccionado: cópialo con tu teclado");}
+}
+function nextCharge(day){
+  day=parseInt(day,10); if(!day||day<1||day>31) return null;
+  const t=new Date(); t.setHours(0,0,0,0);
+  const make=(y,m)=>new Date(y,m,Math.min(day,new Date(y,m+1,0).getDate()));
+  let d=make(t.getFullYear(),t.getMonth()); if(d<t) d=make(t.getFullYear(),t.getMonth()+1);
+  return {date:d,days:Math.round((d-t)/864e5)};
+}
+const fmtDate=d=>d.toLocaleDateString("es-MX",{day:"numeric",month:"short"});
+
+/* ---------- cifrado (AES-GCM con clave derivada por PBKDF2) ---------- */
+const te=new TextEncoder(), td=new TextDecoder();
+const b64=buf=>{const u=new Uint8Array(buf);let s="";for(let i=0;i<u.length;i++)s+=String.fromCharCode(u[i]);return btoa(s);};
+const ub64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function derive(pass,salt,iter){
+  const base=await crypto.subtle.importKey("raw",te.encode(pass),"PBKDF2",false,["deriveKey"]);
+  return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:iter,hash:"SHA-256"},base,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
+}
+async function encrypt(obj,pass){
+  const salt=crypto.getRandomValues(new Uint8Array(16)), iv=crypto.getRandomValues(new Uint8Array(12)), iter=310000;
+  const k=await derive(pass,salt,iter);
+  const c=await crypto.subtle.encrypt({name:"AES-GCM",iv},k,te.encode(JSON.stringify(obj)));
+  return {v:1,n:iter,s:b64(salt),i:b64(iv),c:b64(c)};
+}
+async function decrypt(e,pass){
+  const k=await derive(pass,ub64(e.s),e.n);
+  const p=await crypto.subtle.decrypt({name:"AES-GCM",iv:ub64(e.i)},k,ub64(e.c));
+  return JSON.parse(td.decode(p));
+}
+
+/* ---------- vista ---------- */
+function renderTotals(src){
+  let total=0,next=null;
+  SERVICES.forEach(s=>{const d=src.subs[s.id];const c=parseFloat(d.cost)||0;total+=c;const nc=nextCharge(d.day);if(nc&&(!next||nc.days<next.nc.days))next={s,nc,c};});
+  $("total").textContent=money(total);
+  $("yearly").textContent=total?"Al año: "+money(total*12):"Sin costos registrados todavía.";
+  if(next){$("nextAmt").textContent=next.c?money(next.c):"—";$("nextWho").textContent=next.s.name+", "+fmtDate(next.nc.date);}
+  else{$("nextAmt").textContent="—";$("nextWho").textContent="Sin fechas de cobro";}
+}
+function chipFor(day){
+  const nc=nextCharge(day);
+  if(!nc) return '<span class="chip">Sin fecha</span>';
+  if(nc.days===0) return '<span class="chip soon">Cobra hoy</span>';
+  if(nc.days<=5) return '<span class="chip soon">En '+nc.days+' día'+(nc.days>1?'s':'')+'</span>';
+  return '<span class="chip ok">En '+nc.days+' días</span>';
+}
+function mailBlock(id){
+  const own=data.subs[id].email, mail=own||data.email;
+  const inner=mail?'<span class="pw-val" id="em-'+id+'">'+esc(mail)+'</span>'+(own?'':'<span class="hint">(correo general)</span>')+'<button class="btn sm" type="button" data-copymail="'+id+'">Copiar</button>':'<span class="hint">Sin correo</span>';
+  return '<div class="pw"><span class="label">Correo</span><div class="pw-row">'+inner+'</div></div>';
+}
+function pwBlock(id){
+  let inner;
+  if(!data.enc) inner='<span class="hint">Sin guardar</span>';
+  else if(!pw) inner='<span class="hint">Bloqueada: escribe la clave familiar arriba</span>';
+  else if(!pw[id]) inner='<span class="hint">Sin guardar</span>';
+  else inner='<span class="pw-val num" id="pwv-'+id+'">'+(shown[id]?esc(pw[id]):"•".repeat(Math.min(pw[id].length,12)))+'</span>'+
+    '<button class="btn sm" type="button" data-show="'+id+'">'+(shown[id]?"Ocultar":"Ver")+'</button>'+
+    '<button class="btn sm" type="button" data-copy="'+id+'">Copiar</button>';
+  return '<div class="pw"><span class="label">Contraseña</span><div class="pw-row">'+inner+'</div></div>';
+}
+function render(){
+  const editing=mode==="edit";
+  $("editBtn").hidden=!canWrite||editing;
+  $("savebar").hidden=!editing;
+  $("emailText").hidden=editing; $("copyEmail").hidden=editing||!data.email; $("emailInput").hidden=!editing;
+  $("emailText").textContent=data.email||"Sin correo registrado";
+  $("lock").hidden=editing; $("keyPanel").hidden=!editing;
+  $("lockForm").hidden=!(data.enc&&!pw); $("lockOpen").hidden=!(data.enc&&pw); $("lockNone").hidden=!!data.enc;
+  renderTotals(editing?draft:data);
+  $("cards").innerHTML=SERVICES.map(s=>{
+    if(editing){
+      const d=draft.subs[s.id];
+      return '<article class="card"><div class="card-head"><div class="mono" style="background:'+s.color+'" aria-hidden="true">'+s.letter+'</div><div class="name">'+s.name+'</div></div>'+
+      '<div class="edit">'+
+      '<label>Costo mensual (MXN)<input id="cost-'+s.id+'" data-s="'+s.id+'" data-f="cost" type="number" inputmode="decimal" min="0" step="0.01" value="'+esc(d.cost)+'" placeholder="0.00"></label>'+
+      '<label>Día de cobro<input id="day-'+s.id+'" data-s="'+s.id+'" data-f="day" type="number" inputmode="numeric" min="1" max="31" value="'+esc(d.day)+'" placeholder="1–31"></label>'+
+      '<label class="full">Plan<input id="plan-'+s.id+'" data-s="'+s.id+'" data-f="plan" type="text" value="'+esc(d.plan)+'" placeholder="Ej. Estándar con anuncios"></label>'+
+      '<label class="full">Correo de la cuenta<input id="email-'+s.id+'" data-s="'+s.id+'" data-f="email" type="email" autocomplete="off" autocapitalize="off" spellcheck="false" value="'+esc(d.email)+'" placeholder="'+esc(draft.email||'correo@ejemplo.com')+'"></label>'+
+      '<label class="full">Contraseña<input id="pw-'+s.id+'" data-s="'+s.id+'" data-f="pw" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" value="'+esc(draft.pw[s.id])+'" placeholder="Contraseña de '+s.name+'"></label>'+
+      '</div></article>';
+    }
+    const d=data.subs[s.id], cost=parseFloat(d.cost)||0, nc=nextCharge(d.day);
+    return '<article class="card"><div class="card-head"><div class="mono" style="background:'+s.color+'" aria-hidden="true">'+s.letter+'</div>'+
+      '<div><div class="name">'+s.name+'</div><div class="plan">'+(esc(d.plan)||"Plan sin especificar")+'</div></div>'+chipFor(d.day)+'</div>'+
+      '<div class="facts"><div><span class="label">Costo al mes</span><span class="v num">'+(cost?money(cost):"—")+'</span></div>'+
+      '<div><span class="label">Próximo cobro</span><span class="v num">'+(nc?fmtDate(nc.date)+" (día "+parseInt(d.day,10)+")":"—")+'</span></div></div>'+
+      mailBlock(s.id)+pwBlock(s.id)+
+      '<div class="actions"><a class="btn primary" href="'+s.url+'" target="_blank" rel="noopener">Iniciar sesión ↗</a>'+
+      '<a class="btn" href="'+s.tv+'" target="_blank" rel="noopener">Código de TV ↗</a></div></article>';
+  }).join("");
+}
+
+/* ---------- desbloquear ---------- */
+async function unlock(key,remember,silent){
+  if(!data.enc||!key) return false;
+  try{pw=await decrypt(data.enc,key);currentKey=key;if(remember)ls.set("ms-key",key);$("lockMsg").textContent="";render();return true;}
+  catch(e){if(!silent){$("lockMsg").textContent="Esa clave no es correcta.";}return false;}
+}
+$("unlockBtn").addEventListener("click",async()=>{
+  const b=$("unlockBtn");b.disabled=true;b.textContent="Abriendo…";
+  await unlock($("unlockInput").value,$("remember").checked,false);
+  b.disabled=false;b.textContent="Desbloquear";
+});
+$("unlockInput").addEventListener("keydown",e=>{if(e.key==="Enter")$("unlockBtn").click();});
+$("relockBtn").addEventListener("click",()=>{pw=null;currentKey="";shown={};ls.del("ms-key");$("unlockInput").value="";render();});
+
+/* ---------- lectura ---------- */
+$("copyEmail").addEventListener("click",()=>copyText(data.email,"Correo",$("emailText")));
+$("cards").addEventListener("click",e=>{
+  const sh=e.target.closest("[data-show]"); if(sh){shown[sh.dataset.show]=!shown[sh.dataset.show];render();return;}
+  const cm=e.target.closest("[data-copymail]"); if(cm){const id=cm.dataset.copymail;copyText(data.subs[id].email||data.email,"Correo",$("em-"+id));return;}
+  const cp=e.target.closest("[data-copy]"); if(cp){const id=cp.dataset.copy;copyText(pw[id],"Contraseña",$("pwv-"+id));}
+});
+
+/* ---------- edición (solo el dueño) ---------- */
+$("editBtn").addEventListener("click",()=>{
+  if(data.enc&&!pw){$("lockMsg").textContent="Primero desbloquea con la clave familiar para editar.";$("unlockInput").focus();return;}
+  let old={}; try{old=JSON.parse(ls.get("mis-streamings-claves")||"{}")||{};}catch(e){}
+  const p=Object.assign({},pw||{});
+  SERVICES.forEach(s=>{if(!p[s.id]&&old[s.id])p[s.id]=old[s.id];});
+  draft={email:data.email,subs:JSON.parse(JSON.stringify(data.subs)),pw:p};
+  mode="edit";render();
+  $("emailInput").value=draft.email||""; $("familyKey").value=currentKey||""; $("saveMsg").textContent="";
+});
+$("emailInput").addEventListener("input",e=>{draft.email=e.target.value;});
+$("cards").addEventListener("input",e=>{
+  const i=e.target; if(mode!=="edit"||!i.dataset.f) return;
+  if(i.dataset.f==="pw") draft.pw[i.dataset.s]=i.value; else draft.subs[i.dataset.s][i.dataset.f]=i.value;
+  renderTotals(draft);
+});
+$("cancelBtn").addEventListener("click",()=>{mode="view";draft=null;render();});
+$("saveBtn").addEventListener("click",save);
+
+function buildDoc(obj){
+  const json=JSON.stringify(obj).replace(/</g,"\\u003c");
+  const body=SNAP.replace(/(<script type="application\/json" id="app-data">)[\s\S]*?(<\/script>)/,(m,a,b)=>a+json+b);
+  const styles=[...document.head.querySelectorAll("style")].map(s=>s.textContent);
+  const reset=styles.find(t=>t.includes("[hidden]"))||":root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif;background:#fafaf9}img{max-width:100%}[hidden]{display:none!important}";
+  return '<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>'+reset+'</style></head><body>'+body+'</body></html>';
+}
+async function save(){
+  if(busy) return;
+  const msg=$("saveMsg"); msg.textContent="";
+  if(!SNAP||!art){msg.textContent="No se puede guardar desde aquí.";return;}
+  const key=$("familyKey").value;
+  const clean={}; SERVICES.forEach(s=>{const v=(draft.pw[s.id]||"");if(v)clean[s.id]=v;});
+  const hasPw=Object.keys(clean).length>0;
+  if(hasPw&&key.length<6){msg.textContent="Pon una clave familiar de al menos 6 caracteres.";$("familyKey").focus();return;}
+  busy=true; const b=$("saveBtn"); b.disabled=true; b.textContent="Guardando…";
+  try{
+    const subs={}; SERVICES.forEach(s=>{const d=draft.subs[s.id];subs[s.id]={cost:String(d.cost||""),day:String(d.day||""),plan:String(d.plan||"").trim(),email:String(d.email||"").trim()};});
+    const out={email:(draft.email||"").trim(),subs,enc:hasPw?await encrypt(clean,key):null};
+    if(hasPw) ss.set("ms-key-after-save",key);
+    await art.publish(buildDoc(out));
+    ls.del("mis-streamings-claves");
+    msg.textContent="Guardado. Recargando…";
+  }catch(e){
+    ss.del("ms-key-after-save");
+    const c=e&&e.code;
+    if(c==="conflict") msg.textContent="Había otra versión más nueva; la página se va a recargar.";
+    else if(["not_writer","not_granted","consent_required","capability_disabled","capability_removed","not_declared"].includes(c)){canWrite=false;mode="view";render();toast("Solo el dueño puede guardar cambios.");}
+    else if(c==="rate_limited") msg.textContent="Espera un momento y vuelve a guardar.";
+    else if(c==="too_large") msg.textContent="Los datos son demasiado grandes para guardarse.";
+    else msg.textContent="No se pudo guardar. Intenta de nuevo.";
+  }
+  busy=false; b.disabled=false; b.textContent="Guardar cambios";
+}
+
+/* ---------- arranque ---------- */
+async function boot(){
+  const h=document.body.innerHTML, a=h.indexOf(M_START), z=h.lastIndexOf(M_END);
+  SNAP=(a>=0&&z>a)?h.slice(a,z+M_END.length):null;
+  render();
+  const k=ss.get("ms-key-after-save")||ls.get("ms-key");
+  ss.del("ms-key-after-save");
+  if(k) await unlock(k,false,true);
+  try{
+    art=await window.claude?.use?.("artifact");
+    canWrite=!!art&&!!SNAP;
+    if(canWrite){try{const u=await window.claude.use("user");if(u&&typeof u.canEdit==="function"){const r=await u.canEdit();if(r===false)canWrite=false;}}catch(e){}}
+  }catch(e){art=null;canWrite=false;}
+  if(mode==="view") render();
+}
+if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",boot); else boot();
+})();
+</script>
+<!--APP-END-->
+
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});}
+</script>
+</body>
+</html>
